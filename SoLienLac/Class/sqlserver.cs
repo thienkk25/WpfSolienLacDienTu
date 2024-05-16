@@ -68,5 +68,15 @@ namespace WindowsFormsApplication1
             cmd = new SqlCommand(sql, conn);
             return cmd.ExecuteScalar(); // trả về một giá trị duy nhất - ở hàng đầu tiên, cột đầu tiên ( trả về 1 đối tượng ).
         }
+        public static DataTable datatableCmd(SqlCommand sqlCommand)
+        {
+            //Tạo một đối tượng SqlDataAdapter với đối tượng SqlCommand đã tạo.
+            da = new SqlDataAdapter(sqlCommand);
+            //Tạo một đối tượng DataTable mới.
+            DataTable dt = new DataTable();
+            // Sử dụng đối tượng SqlDataAdapter để thực thi truy vấn SQL và điền kết quả vào đối tượng DataTable đã tạo.
+            da.Fill(dt);
+            return dt; // trả về kết quả dưới dạng một bảng dữ liệu DataTable.
+        }
     }
 }
