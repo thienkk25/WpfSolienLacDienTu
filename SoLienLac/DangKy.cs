@@ -40,8 +40,14 @@ namespace WindowsFormsApplication1
         {
             sqlserver.connect();
             string tk = tbTK.Text, mk = tbMK.Text, em = tbEM.Text;
-            string sql = "select count(*) from TaiKhoan where TenTK='" + tk + "'";
-            int kt = (int)sqlserver.scalar(sql); // trả về một giá trị duy nhất - ở hàng đầu tiên, cột đầu tiên.
+            //string sql = "select count(*) from TaiKhoan where TenTK='" + tk + "'";
+            //int kt = (int)sqlserver.scalar(sql); // trả về một giá trị duy nhất - ở hàng đầu tiên, cột đầu tiên.
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection=sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "select count(*) from TaiKhoan where TenTK=@tk";
+            sqlCommand.Parameters.AddWithValue("@tk", tk);
+            int kt = (int)sqlCommand.ExecuteScalar();
             if (kt != 0)
             {
                 label4.Text = "Error: Tên tài khoản đã tồn tại!";
@@ -50,8 +56,14 @@ namespace WindowsFormsApplication1
             }
             else
             {
-                sql = "insert into TaiKhoan(TenTK,MatKhau,Email) values('" + tk + "','" + mk + "','" + em + "')";
-                sqlserver.nonquery(sql); // thực thi truy vấn không trả về dữ liệu
+                //sql = "insert into TaiKhoan(TenTK,MatKhau,Email) values('" + tk + "','" + mk + "','" + em + "')";
+                //sqlserver.nonquery(sql); // thực thi truy vấn không trả về dữ liệu
+                sqlCommand.Parameters.Clear();
+                sqlCommand.CommandText = "insert into TaiKhoan(TenTK,MatKhau,Email) values(@tk,@mk,@em)";
+                sqlCommand.Parameters.AddWithValue("@tk", tk);
+                sqlCommand.Parameters.AddWithValue("@mk", mk);
+                sqlCommand.Parameters.AddWithValue("@em", em);
+                sqlCommand.ExecuteNonQuery();
                 label4.ForeColor = System.Drawing.Color.Green; // đặt màu chữ của một Label sang màu xanh
                 label4.Text = "Đăng ký tài khoản thành công!";
             }

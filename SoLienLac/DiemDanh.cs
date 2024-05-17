@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -44,8 +45,14 @@ namespace WindowsFormsApplication1
         private void btnXem_Click(object sender, EventArgs e)
         {
             sqlserver.connect();
-            string sql = "select MaHS,TenHS, GT, NS from HocSinh where MaLop='" + cbbLop.SelectedValue + "'";
-            dgvHocSinh.DataSource = sqlserver.datatable(sql);
+            //string sql = "select MaHS,TenHS, GT, NS from HocSinh where MaLop='" + cbbLop.SelectedValue + "'";
+            //dgvHocSinh.DataSource = sqlserver.datatable(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection =sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "select MaHS,TenHS, GT, NS from HocSinh where MaLop=@maLop";
+            sqlCommand.Parameters.AddWithValue("@maLop",cbbLop.SelectedValue);
+            dgvHocSinh.DataSource = sqlserver.datatableCmd(sqlCommand);
         }
 
         private void btnXuat_Click(object sender, EventArgs e)

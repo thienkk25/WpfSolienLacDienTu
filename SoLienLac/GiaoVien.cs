@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,7 @@ namespace WindowsFormsApplication1
         private void btnTimkiem_Click(object sender, EventArgs e)
         {
             string ten = tengv.Text;
-            string sql = "select * from GiaoVien where TenGV like N'%" + ten + "%'";
+            string sql = $"select * from GiaoVien where TenGV like N'%{ten}%'";
             dgv.DataSource = sqlserver.datatable(sql);
             tengv.Text = "";
             dcgv.Text = "";
@@ -44,9 +45,16 @@ namespace WindowsFormsApplication1
 
         private void btnThem_Click(object sender, EventArgs e)
         {
-            string ten = tengv.Text, dc = dcgv.Text;
-            string sql = "insert into GiaoVien(TenGV, DiaChi) values(N'" + ten + "',N'" + dc + "')";
-            sqlserver.nonquery(sql);
+            string ten = tengv.Text, dc = dcgv.Text,sql;
+            //string sql = "insert into GiaoVien(TenGV, DiaChi) values(N'" + ten + "',N'" + dc + "')";
+            //sqlserver.nonquery(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "insert into GiaoVien(TenGV, DiaChi) values(@ten,@diachi)";
+            sqlCommand.Parameters.AddWithValue("@ten", ten);
+            sqlCommand.Parameters.AddWithValue("@diachi", dc);
+            sqlCommand.ExecuteNonQuery();
             tengv.Text = "";
             dcgv.Text = "";
             sql = "select * from GiaoVien order by MaGV desc";
@@ -57,10 +65,19 @@ namespace WindowsFormsApplication1
         {
             int indexrow = dgv.CurrentCell.RowIndex;
             int magv = Convert.ToInt32(dgv.Rows[indexrow].Cells[0].Value);
-            string ten = tengv.Text, dc = dcgv.Text;
+            string ten = tengv.Text, dc = dcgv.Text, sql;
 
-            string sql = "update GiaoVien set TenGV=N'" + ten + "', DiaChi=N'" + dc + "' where MaGV='" + magv + "'";
-            sqlserver.nonquery(sql);
+            //string sql = "update GiaoVien set TenGV=N'" + ten + "', DiaChi=N'" + dc + "' where MaGV='" + magv + "'";
+            //sqlserver.nonquery(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "update GiaoVien set TenGV=@ten, DiaChi=@diachi where MaGV=@magv";
+            sqlCommand.Parameters.AddWithValue("@ten", ten);
+            sqlCommand.Parameters.AddWithValue("@diachi", dc);
+            sqlCommand.Parameters.AddWithValue("@magv", magv);
+            sqlCommand.ExecuteNonQuery();
+
             sql = "select * from GiaoVien order by MaGV desc";
             dgv.DataSource = sqlserver.datatable(sql);
             tengv.Text = "";
@@ -71,8 +88,16 @@ namespace WindowsFormsApplication1
         {
             int indexrow = dgv.CurrentCell.RowIndex;
             int magv = Convert.ToInt32(dgv.Rows[indexrow].Cells[0].Value);
-            string sql = "delete from GiaoVien where MaGV='" + magv + "'";
-            sqlserver.nonquery(sql);
+            string sql;
+            //string sql = "delete from GiaoVien where MaGV='" + magv + "'";
+            //sqlserver.nonquery(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "delete from GiaoVien where MaGV=@magv'";
+            sqlCommand.Parameters.AddWithValue("@magv", magv);
+            sqlCommand.ExecuteNonQuery();
+
             sql = "select * from GiaoVien order by MaGV desc";
             dgv.DataSource = sqlserver.datatable(sql);
             tengv.Text = "";
