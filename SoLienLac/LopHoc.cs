@@ -73,14 +73,25 @@ namespace WindowsFormsApplication1
         {
             sqlserver.connect();
             string tl = tenlop.Text;
-            string sql = "select count(*) from Lop where TenLop='" + tl + "'";
-            int kt = (int)sqlserver.scalar(sql);
+            // string sql = "select count(*) from Lop where TenLop='" + tl + "'";
+            // int kt = (int)sqlserver.scalar(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "select count(*) from Lop where TenLop=@tl";
+            sqlCommand.Parameters.AddWithValue("@tl",tl);
+            int kt = (int)sqlCommand.ExecuteScalar();
             if (kt != 0) MessageBox.Show("Tên Lớp này đã tồn tại");
             else
             {
                 int mgv = Convert.ToInt32(magv.SelectedValue);
-                sql = "insert into Lop(TenLop,MaGV) values('" + tl + "','" + mgv + "')";
-                sqlserver.nonquery(sql);
+                // sql = "insert into Lop(TenLop,MaGV) values('" + tl + "','" + mgv + "')";
+                // sqlserver.nonquery(sql);
+                sqlCommand.Parameters.Clear();
+                sqlCommand.CommandText = "insert into Lop(TenLop,MaGV) values(@tl,@mgv)";
+                sqlCommand.Parameters.AddWithValue("@tl",tl);
+                sqlCommand.Parameters.AddWithValue("@mgv",mgv);
+                sqlCommand.ExecuteNonQuery();
                 tenlop.Text = "";
                 LopHoc_Load(sender, e);
             }
@@ -90,8 +101,14 @@ namespace WindowsFormsApplication1
         {
             sqlserver.connect();
             string tl = tenlop.Text;
-            string sql = "select count(*) from Lop where TenLop='" + tl + "'";
-            int kt = (int)sqlserver.scalar(sql);
+            // string sql = "select count(*) from Lop where TenLop='" + tl + "'";
+            // int kt = (int)sqlserver.scalar(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "select count(*) from Lop where TenLop=@tl";
+            sqlCommand.Parameters.AddWithValue("@tl",tl);
+            int kt = (int)sqlCommand.ExecuteScalar();
             if (kt != 0) MessageBox.Show("Tên Lớp này đã tồn tại");
             else
             {
@@ -99,8 +116,14 @@ namespace WindowsFormsApplication1
                 int mgv = Convert.ToInt32(magv.SelectedValue);
                 int mlop = Convert.ToInt32(dgv.Rows[indexrow].Cells[0].Value);
 
-                sql = "update Lop set TenLop='" + tl + "', MaGV='" + mgv + "' where MaLop='" + mlop + "'";
-                sqlserver.nonquery(sql);
+                // sql = "update Lop set TenLop='" + tl + "', MaGV='" + mgv + "' where MaLop='" + mlop + "'";
+                // sqlserver.nonquery(sql);
+                sqlCommand.Parameters.Clear();
+                sqlCommand.CommandText = "update Lop set TenLop=@tl, MaGV=@mgv where MaLop=@mlop";
+                sqlCommand.Parameters.AddWithValue("@tl",tl);
+                sqlCommand.Parameters.AddWithValue("@mgv",mgv);
+                sqlCommand.Parameters.AddWithValue("@mlop",mlop);
+                sqlCommand.ExecuteNonQuery();
                 tenlop.Text = "";
                 LopHoc_Load(sender, e);
             }
@@ -111,8 +134,14 @@ namespace WindowsFormsApplication1
             sqlserver.connect();
             int indexrow = dgv.CurrentCell.RowIndex;
             int mlop = Convert.ToInt32(dgv.Rows[indexrow].Cells[0].Value);
-            string sql = "delete from Lop where MaLop='" + mlop + "'";
-            sqlserver.nonquery(sql);
+            // string sql = "delete from Lop where MaLop='" + mlop + "'";
+            // sqlserver.nonquery(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "delete from Lop where MaLop=@mlop";
+            sqlCommand.Parameters.AddWithValue("@mlop",mlop);
+            sqlCommand.ExecuteNonQuery();
             tenlop.Text = "";
             LopHoc_Load(sender, e);
         }
@@ -121,8 +150,14 @@ namespace WindowsFormsApplication1
         {
             sqlserver.connect();
             int malop = Convert.ToInt32(xemlop.SelectedValue);
-            string sql = "select HocSinh.MaHS, HocSinh.TenHS, Lop.MaLop, Lop.TenLop from HocSinh, Lop where HocSinh.MaLop=Lop.MaLop and HocSinh.MaLop='" + malop + "'";
-            dg.DataSource = sqlserver.datatable(sql);
+            // string sql = "select HocSinh.MaHS, HocSinh.TenHS, Lop.MaLop, Lop.TenLop from HocSinh, Lop where HocSinh.MaLop=Lop.MaLop and HocSinh.MaLop='" + malop + "'";
+            // dg.DataSource = sqlserver.datatable(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "select HocSinh.MaHS, HocSinh.TenHS, Lop.MaLop, Lop.TenLop from HocSinh, Lop where HocSinh.MaLop=Lop.MaLop and HocSinh.MaLop=@malop";
+            sqlCommand.Parameters.AddWithValue("@malop",malop);
+            dg.DataSource = sqlserver.datatableCmd(sqlCommand);
         }
 
         private void btnHocsinhchuaxeplop_Click(object sender, EventArgs e)
@@ -139,8 +174,15 @@ namespace WindowsFormsApplication1
             int id = dg.CurrentCell.RowIndex;
             mahs = Convert.ToInt32(dg.Rows[id].Cells[0].Value);
             malop = Convert.ToInt32(lopmoi.SelectedValue);
-            string sql = "update HocSinh set MaLop='" + malop + "' where MaHS='" + mahs + "'";
-            sqlserver.nonquery(sql);
+            // string sql = "update HocSinh set MaLop='" + malop + "' where MaHS='" + mahs + "'";
+            // sqlserver.nonquery(sql);
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "update HocSinh set MaLop=@malop where MaHS=@mahs";
+            sqlCommand.Parameters.AddWithValue("@malop",malop);
+            sqlCommand.Parameters.AddWithValue("@mahs",mahs);
+            sqlCommand.ExecuteNonQuery();
             LopHoc_Load(sender, e);
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -53,8 +54,20 @@ namespace WindowsFormsApplication1
             dc = tdc.Text;
             tb = ttb.Text;
             tm = ttm.Text;
-            string sql = "insert into HocSinh(TenHS, GT, NS, DiaChi, HoTenCha, HoTenMe) values(N'" + ht + "',N'" + gt + "','" + ns + "',N'" + dc + "',N'" + tb + "',N'" + tm + "')";
-            sqlserver.nonquery(sql);
+            //string sql = "insert into HocSinh(TenHS, GT, NS, DiaChi, HoTenCha, HoTenMe) values(N'" + ht + "',N'" + gt + "','" + ns + "',N'" + dc + "',N'" + tb + "',N'" + tm + "')";
+            //sqlserver.nonquery(sql);
+            sqlserver.connect();
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "insert into HocSinh(TenHS, GT, NS, DiaChi, HoTenCha, HoTenMe) values(@ht,@gt,@ns,@dc,@tb,@tm)";
+            sqlCommand.Parameters.AddWithValue("@ht",ht);
+            sqlCommand.Parameters.AddWithValue("@gt", gt);
+            sqlCommand.Parameters.AddWithValue("@ns", ns);
+            sqlCommand.Parameters.AddWithValue("@dc", dc);
+            sqlCommand.Parameters.AddWithValue("@tb", tb);
+            sqlCommand.Parameters.AddWithValue("@tm", tm);
+            sqlCommand.ExecuteNonQuery();
             HocSinh_Load(sender, e); // Gọi lại phương thức HocSinh_Load()
         }
 
@@ -69,8 +82,21 @@ namespace WindowsFormsApplication1
             tm = ttm.Text;
             int idr = dgv.CurrentCell.RowIndex;
             int mahs = Convert.ToInt32(dgv.Rows[idr].Cells[0].Value);
-            string sql = "update HocSinh set TenHS=N'" + ht + "', GT=N'" + gt + "', NS='" + ns + "', DiaChi=N'" + dc + "', HoTenCha=N'" + tb + "', HoTenMe=N'" + tm + "' where MaHS='" + mahs + "'";
-            sqlserver.nonquery(sql);
+            //string sql = "update HocSinh set TenHS=N'" + ht + "', GT=N'" + gt + "', NS='" + ns + "', DiaChi=N'" + dc + "', HoTenCha=N'" + tb + "', HoTenMe=N'" + tm + "' where MaHS='" + mahs + "'";
+            //sqlserver.nonquery(sql);
+            sqlserver.connect();
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "update HocSinh set TenHS=@ht, GT=@gt, NS=@ns, DiaChi=@dc, HoTenCha=@tb, HoTenMe=@tm where MaHS=@mahs";
+            sqlCommand.Parameters.AddWithValue("@ht", ht);
+            sqlCommand.Parameters.AddWithValue("@gt", gt);
+            sqlCommand.Parameters.AddWithValue("@ns", ns);
+            sqlCommand.Parameters.AddWithValue("@dc", dc);
+            sqlCommand.Parameters.AddWithValue("@tb", tb);
+            sqlCommand.Parameters.AddWithValue("@tm", tm);
+            sqlCommand.Parameters.AddWithValue("@mahs", mahs);
+            sqlCommand.ExecuteNonQuery();
             HocSinh_Load(sender, e);
         }
 
@@ -81,14 +107,29 @@ namespace WindowsFormsApplication1
 
             int mahs = Convert.ToInt32(dgv.Rows[idr].Cells[0].Value);
 
-            string sqlBangdiem = "delete from BangDiem where MaHS='" + mahs + "'";
-            sqlserver.nonquery(sqlBangdiem);
+            // string sqlBangdiem = "delete from BangDiem where MaHS='" + mahs + "'";
+            // sqlserver.nonquery(sqlBangdiem);
+            sqlserver.connect();
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "delete from BangDiem where MaHS=@mahs";
+            sqlCommand.Parameters.AddWithValue("@mahs",mahs);
+            sqlCommand.ExecuteNonQuery();
 
-            string sqlDanhGia = "delete from DanhGia where MaHS='" + mahs + "'";
-            sqlserver.nonquery(sqlDanhGia);
+            // string sqlDanhGia = "delete from DanhGia where MaHS='" + mahs + "'";
+            // sqlserver.nonquery(sqlDanhGia);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "delete from DanhGia where MaHS=@mahs";
+            sqlCommand.Parameters.AddWithValue("@mahs",mahs);
+            sqlCommand.ExecuteNonQuery();
 
-            string sqlHocSinh = "delete from HocSinh where MaHS='" + mahs + "'";
-            sqlserver.nonquery(sqlHocSinh);
+            // string sqlHocSinh = "delete from HocSinh where MaHS='" + mahs + "'";
+            // sqlserver.nonquery(sqlHocSinh);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "delete from HocSinh where MaHS=@mahs";
+            sqlCommand.Parameters.AddWithValue("@mahs",mahs);
+            sqlCommand.ExecuteNonQuery();
             HocSinh_Load(sender, e);
         }
 
@@ -107,7 +148,7 @@ namespace WindowsFormsApplication1
                 case 6: tkt = "HoTenMe"; break;
                 default: tkt = "TenHS"; break;
             }
-            string sql = "select MaHS, TenHS, GT, NS, DiaChi, HoTenCha, HoTenMe from HocSinh where " + tkt + " like N'%" + tk + "%'";
+            string sql = $"select MaHS, TenHS, GT, NS, DiaChi, HoTenCha, HoTenMe from HocSinh where {tkt} like N'%{tk}%'";
             dgv.DataSource = sqlserver.datatable(sql);
             ttk.Text = "";
         }

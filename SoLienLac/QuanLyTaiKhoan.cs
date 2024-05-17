@@ -85,16 +85,30 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Loại tài khoản không được để trống");
                 return;
             }
-            string sql=$"select count(*) from TaiKhoan where TenTK='{txtTk.Text}'";
-            int kt=(int)sqlserver.scalar(sql);
+            // string sql=$"select count(*) from TaiKhoan where TenTK='{txtTk.Text}'";
+            // int kt=(int)sqlserver.scalar(sql);
+            sqlserver.connect();
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "select count(*) from TaiKhoan where TenTK=@TenTK";
+            sqlCommand.Parameters.AddWithValue("@TenTK",txtTk.Text);
+            int kt=(int)sqlCommand.ExecuteScalar();
             if (kt != 0)
             {
                 MessageBox.Show("Trùng tài khoản, vui lòng thử lại!");
                 return;
             }
             //int.Parse(cbbLoai.Text) ép kiểu String sang int
-            sql = $"insert into TaiKhoan(TenTK,MatKhau,Email,LoaiTK) values('{txtTk.Text}','{txtMk.Text}','{txtEmail.Text}',{int.Parse(cbbLoai.Text)})";
-            sqlserver.nonquery(sql);
+            // sql = $"insert into TaiKhoan(TenTK,MatKhau,Email,LoaiTK) values('{txtTk.Text}','{txtMk.Text}','{txtEmail.Text}',{int.Parse(cbbLoai.Text)})";
+            // sqlserver.nonquery(sql);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "insert into TaiKhoan(TenTK,MatKhau,Email,LoaiTK) values(@tk,@mk,@email,@loaiTK)";
+            sqlCommand.Parameters.AddWithValue("@tk",txtTk.Text);
+            sqlCommand.Parameters.AddWithValue("@mk",txtMk.Text);
+            sqlCommand.Parameters.AddWithValue("@email",txtEmail.Text);
+            sqlCommand.Parameters.AddWithValue("@loaiTK",int.Parse(cbbLoai.Text));
+            sqlCommand.ExecuteNonQuery();
             HienThiDuLieu() ;
         }
 
@@ -120,8 +134,19 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Loại tài khoản không được để trống");
                 return;
             }
-            string sql = $"update TaiKhoan set TenTK='{txtTk.Text}', MatKhau='{txtMk.Text}', Email='{txtEmail.Text}', LoaiTK={int.Parse(cbbLoai.Text)} where MaTK={int.Parse(txtMatk.Text)}";
-            sqlserver.nonquery(sql);
+            // string sql = $"update TaiKhoan set TenTK='{txtTk.Text}', MatKhau='{txtMk.Text}', Email='{txtEmail.Text}', LoaiTK={int.Parse(cbbLoai.Text)} where MaTK={int.Parse(txtMatk.Text)}";
+            // sqlserver.nonquery(sql);
+            sqlserver.connect();
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "update TaiKhoan set TenTK=@tk, MatKhau=@mk, Email=@email, LoaiTK=@loaiTK where MaTK=matk";
+            sqlCommand.Parameters.AddWithValue("@tk",txtTk.Text);
+            sqlCommand.Parameters.AddWithValue("@mk",txtMk.Text);
+            sqlCommand.Parameters.AddWithValue("@email",txtEmail.Text);
+            sqlCommand.Parameters.AddWithValue("@loaiTK",int.Parse(cbbLoai.Text));
+            sqlCommand.Parameters.AddWithValue("@matk",int.Parse(txtMatk.Text));
+            sqlCommand.ExecuteNonQuery();
             HienThiDuLieu();
         }
 
@@ -147,8 +172,15 @@ namespace WindowsFormsApplication1
                 MessageBox.Show("Loại tài khoản không được để trống");
                 return;
             }
-            string sql = $"delete from TaiKhoan where MaTK={int.Parse(txtMatk.Text)}";
-            sqlserver.nonquery(sql);
+            // string sql = $"delete from TaiKhoan where MaTK={int.Parse(txtMatk.Text)}";
+            // sqlserver.nonquery(sql);
+            sqlserver.connect();
+            SqlCommand sqlCommand = new SqlCommand();
+            sqlCommand.Connection = sqlserver.conn;
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.CommandText = "delete from TaiKhoan where MaTK=@matk";
+            sqlCommand.Parameters.AddWithValue("@matk",int.Parse(txtMatk.Text));
+            sqlCommand.ExecuteNonQuery();
             HienThiDuLieu();
         }
     }
