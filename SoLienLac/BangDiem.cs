@@ -47,9 +47,9 @@ namespace WindowsFormsApplication1
             sqlCommand.CommandText = "select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS=@mhs";
             sqlCommand.Parameters.AddWithValue("@mhs", mhs);
             gbd.DataSource=sqlserver.datatableCmd(sqlCommand);
-
-            sqlCommand.CommandText = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS=@mhs1";
-            sqlCommand.Parameters.AddWithValue("@mhs1", mhs);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS=@mhs";
+            sqlCommand.Parameters.AddWithValue("@mhs", mhs);
             gdg.DataSource =sqlserver.datatableCmd(sqlCommand);
 
             tabControl1.Enabled = true; //người dùng có thể tương tác với các tab và các phần tử khác trong TabControl.
@@ -117,31 +117,33 @@ namespace WindowsFormsApplication1
             kt = (int)sqlCommand.ExecuteScalar();
             if (kt == 0)
             {
+                sqlCommand.Parameters.Clear();
                 //sql = $"insert into BangDiem values('{mhs}','{mmh}','{diem}')";
                 //sqlserver.nonquery(sql); // thực thi truy vấn không trả về dữ liệu
-                sqlCommand.CommandText = "insert into BangDiem values(@mhs1,@mmh1,@diem1)";
-                sqlCommand.Parameters.AddWithValue("@mhs1", mhs);
-                sqlCommand.Parameters.AddWithValue("@mmh1", mmh);
-                sqlCommand.Parameters.AddWithValue("@diem1", diem);
+                sqlCommand.CommandText = "insert into BangDiem values(@mhs,@mmh,@diem)";
+                sqlCommand.Parameters.AddWithValue("@mhs", mhs);
+                sqlCommand.Parameters.AddWithValue("@mmh", mmh);
+                sqlCommand.Parameters.AddWithValue("@diem", diem);
                 sqlCommand.ExecuteNonQuery();
             }
             else
             {
+                sqlCommand.Parameters.Clear();
                 //sql = $"update BangDiem set Diem='{diem}' where MaHS='{mhs}' and MaMH='{mmh}'";
                 //sqlserver.nonquery(sql);
-                sqlCommand.CommandText = "update BangDiem set Diem=@diem2 where MaHS=@mhs2 and MaMH=@mmh2";
-                sqlCommand.Parameters.AddWithValue("@mhs2", mhs);
-                sqlCommand.Parameters.AddWithValue("@mmh2", mmh);
-                sqlCommand.Parameters.AddWithValue("@diem2", diem);
+                sqlCommand.CommandText = "update BangDiem set Diem=@diem where MaHS=@mhs and MaMH=@mmh";
+                sqlCommand.Parameters.AddWithValue("@mhs", mhs);
+                sqlCommand.Parameters.AddWithValue("@mmh", mmh);
+                sqlCommand.Parameters.AddWithValue("@diem", diem);
                 sqlCommand.ExecuteNonQuery();
             }
             tdiem.Text = "";
             //sql = $"select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS='{mhs}'";
             //gbd.DataSource = sqlserver.datatable(sql);
-
+            sqlCommand.Parameters.Clear();
             sqlCommand.CommandType = CommandType.Text;
-            sqlCommand.CommandText = "select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS=@mhs3";
-            sqlCommand.Parameters.AddWithValue("@mhs3", mhs);
+            sqlCommand.CommandText = "select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS=@mhs";
+            sqlCommand.Parameters.AddWithValue("@mhs", mhs);
             gbd.DataSource = sqlserver.datatableCmd(sqlCommand);
         }
 
@@ -163,9 +165,9 @@ namespace WindowsFormsApplication1
 
             //sql = "select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS='" + mhs + "'";
             //gbd.DataSource = sqlserver.datatable(sql);
-
-            sqlCommand.CommandText = "select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS=@mhs1";
-            sqlCommand.Parameters.AddWithValue("@mhs1", mhs);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "select MonHoc.TenMH, BangDiem.Diem from MonHoc, BangDiem where BangDiem.MaMH=MonHoc.MaMH and BangDiem.MaHS=@mhs";
+            sqlCommand.Parameters.AddWithValue("@mhs", mhs);
             gbd.DataSource = sqlserver.datatableCmd(sqlCommand);
         }
 
@@ -204,23 +206,26 @@ namespace WindowsFormsApplication1
             {
                 //sql = "insert into DanhGia values('" + mhs + "',N'" + hk + "',N'" + xl + "',N'" + nx + "')";
                 //sqlserver.nonquery(sql);
-                sqlCommand.CommandText = "insert into DanhGia values(@mhs1,N'" + hk + "',N'" + xl + "',N'" + nx + "')";
-                sqlCommand.Parameters.AddWithValue("@mhs1", mhs);
+                sqlCommand.Parameters.Clear();
+                sqlCommand.CommandText = "insert into DanhGia values(@mhs,N'" + hk + "',N'" + xl + "',N'" + nx + "')";
+                sqlCommand.Parameters.AddWithValue("@mhs", mhs);
                 sqlCommand.ExecuteNonQuery();
             }
             else
             {
                 //sql = "update DanhGia set HanhKiem=N'" + hk + "', XepLoai=N'" + xl + "', NhanXet=N'" + nx + "' where MaHS='" + mhs + "'";
                 //sqlserver.nonquery(sql);
-                sqlCommand.CommandText = "update DanhGia set HanhKiem=N'" + hk + "', XepLoai=N'" + xl + "', NhanXet=N'" + nx + "' where MaHS=@mhs2";
-                sqlCommand.Parameters.AddWithValue("@mhs2", mhs);
+                sqlCommand.Parameters.Clear();
+                sqlCommand.CommandText = "update DanhGia set HanhKiem=N'" + hk + "', XepLoai=N'" + xl + "', NhanXet=N'" + nx + "' where MaHS=@mhs";
+                sqlCommand.Parameters.AddWithValue("@mhs", mhs);
                 sqlCommand.ExecuteNonQuery();
             }
             tnx.Text = "";
             //sql = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS='" + mhs + "'";
             //gdg.DataSource = sqlserver.datatable(sql);
-            sqlCommand.CommandText = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS=@mhs3";
-            sqlCommand.Parameters.AddWithValue("@mhs3", mhs);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS=@mhs";
+            sqlCommand.Parameters.AddWithValue("@mhs", mhs);
             gdg.DataSource = sqlserver.datatableCmd(sqlCommand);
         }
 
@@ -240,8 +245,9 @@ namespace WindowsFormsApplication1
 
             //sql = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS='" + mhs + "'";
             //gdg.DataSource = sqlserver.datatable(sql);
-            sqlCommand.CommandText = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS=@mhs1";
-            sqlCommand.Parameters.AddWithValue("@mhs1", mhs);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "select HanhKiem, XepLoai, NhanXet from DanhGia where MaHS=@mhs";
+            sqlCommand.Parameters.AddWithValue("@mhs", mhs);
             gdg.DataSource =sqlserver.datatableCmd(sqlCommand);
         }
     }
